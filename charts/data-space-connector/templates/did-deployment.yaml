@@ -33,7 +33,7 @@ spec:
               subPath: did.json
             - name: certs
               mountPath: /home/static/.well-known/tls.crt
-              subPath: client-chain-bundle.cert.pem
+              subPath: tls.crt
       volumes:
         - name: did-json
           configMap:
