@@ -7,17 +7,14 @@ metadata:
   annotations:
     {{- with .Values.didJson.ingress.annotations }}
       {{- toYaml . | nindent 4 }}
-      {{- end }}
     {{- end }}
   labels:
     {{ include "dsc.labels" . | nindent 4 }}
 spec:
-  {{- if .Values.didJson.ingress.tls}}
   tls:
     - hosts:
-      - {{ .Values.didJson.ingress.tls.host  | quote }}
+      - {{ .Values.didJson.ingress.host  | quote }}
       secretName: cert-chain
-  {{- end}}
   rules:
     - host: {{ .Values.didJson.ingress.host }}
       http:
