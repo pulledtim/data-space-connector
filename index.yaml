@@ -380,4 +380,22 @@ entries:
     urls:
     - https://github.com/pulledtim/data-space-connector/releases/download/data-space-connector-24.2.0/data-space-connector-24.2.0.tgz
     version: 24.2.0
-generated: "2025-09-11T06:57:28.778887976Z"
+  trust-anchor:
+  - apiVersion: v2
+    created: "2025-09-11T13:07:43.975303908Z"
+    dependencies:
+    - condition: trusted-issuers-list.enabled
+      name: trusted-issuers-list
+      repository: https://fiware.github.io/helm-charts
+      version: 0.6.2
+    - condition: mysql.enabled
+      name: mysql
+      repository: https://charts.bitnami.com/bitnami
+      version: 14.0.3
+    description: Umbrella Chart to provide a minimal trust anchor for a FIWARE Dataspace
+    digest: 1202fc11aa7bdd417a85494f7350bddf796e5f9f9c9c54c3ef35e2f1182bacfd
+    name: trust-anchor
+    urls:
+    - https://github.com/pulledtim/data-space-connector/releases/download/trust-anchor-0.3.0/trust-anchor-0.3.0.tgz
+    version: 0.3.0
+generated: "2025-09-11T13:07:43.975323594Z"
