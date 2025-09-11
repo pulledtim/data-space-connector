@@ -26,6 +26,14 @@ issuance:
 mysql:
   # -- should it be enabled? set to false if one outside the chart is used.
   enabled: true
+  global:
+    security:
+      # allow the image from the legacy repo
+      allowInsecureImages: true
+  # -- configuration of the used image
+  image:
+    # -- repository where the image is held, see https://github.com/bitnami/charts/issues/35164 for further info
+    repository: bitnamilegacy/mysql
   # -- allows to set a fixed name for the services
   fullnameOverride: authentication-mysql
   # -- configure authentication to mysql
@@ -110,7 +118,14 @@ credentials-config-service:
 postgresql:
   # -- should it be enabled? set to false if one outside the chart is used.
   enabled: true
+  global:
+    security:
+      # allow the image from the legacy repo
+      allowInsecureImages: true
+  # -- configuration of the used image
   image:
+    # -- repository where the image is held, see https://github.com/bitnami/charts/issues/35164 for further info
+    repository: bitnamilegacy/postgresql
     # -- fixes the unpullable image referenced in the chart
     tag: 13.18.0
   # -- allows to set a fixed name for the services
@@ -420,10 +435,39 @@ elsi:
   # -- password of the key
   keyPassword:
 
+## Installation of the postgres-operator - see https://github.com/zalando/postgres-operator
+postgres-operator:
+  # -- should the postgres-operator be installed
+  enabled: false
+  configKubernetes:
+    enable_readiness_probe: true
+
+## Usage of the postgres-operator - see https://github.com/zalando/postgres-operator
+managedPostgres:
+  # -- should it be enabled? Requires the postgres-operator CRDs to be installed before applying the chart
+  enabled: false
+  # -- config as defined in https://github.com/zalando/postgres-operator/blob/master/charts/postgres-operator/crds/postgresqls.yaml
+  config:
+    teamId: "dsc"
+    volume:
+      size: 1Gi
+    numberOfInstances: 1
+    postgresql:
+      version: "17"
+
 ## configuration of the keycloak - see https://github.com/bitnami/charts/tree/main/bitnami/keycloak for details
 keycloak:
   # -- should it be enabled? set to false if one outside the chart is used.
   enabled: true
+  global:
+    security:
+      # allow the image from the legacy repo
+      allowInsecureImages: true
+  # -- configuration of the used image
+  image:
+    # -- repository where the image is held, see https://github.com/bitnami/charts/issues/35164 for further info
+    repository: bitnamilegacy/keycloak
+    tag: 26.3.2-debian-12-r0
   # -- disable the security context, required by the current quarkus container, will be solved in the future chart versions of keycloak
   containerSecurityContext:
     enabled: false
@@ -437,6 +481,18 @@ keycloak:
     existingSecret: issuance-secret
     passwordSecretKey: keycloak-admin
     adminUser: keycloak-admin
+
+  # -- sets memory requests for keycloak
+  # increased above the bitnami defaults to prevent OOMs in linux kernel >=6.14
+  resources:
+    requests:
+      memory: "500Mi"
+      cpu: "0.5"
+    limits:
+      memory: "2Gi"
+      cpu: "1"
+
+
   # -- should the db be deployed as part of the keycloak chart
   postgresql:
     enabled: false
@@ -473,6 +529,9 @@ keycloak:
         secretKeyRef:
           name: issuance-secret
           key: keycloak-admin
+    # set in accordance with the memory requests, will result in OOM otherwise
+    - name: KC_HEAP_SIZE
+      value: "1024m"
 
   # -- configuration of the realm to be imported
   realm:
@@ -741,6 +800,23 @@ rainbow:
   ingress:
     # -- should the ingress be enabled
     enabled: false
+    # -- annotations to be added to the ingress
+    annotations: {}
+      # kubernetes.io/ingress.class: "ambassador"
+      ## example annotations, allowing cert-manager to automatically create tls-certs and forcing everything to use ssl.
+      # kubernetes.io/tls-acme: "true"
+      # ingress.kubernetes.io/ssl-redirect: "true"
+    # -- all hosts to be provided
+    hosts: []
+      ## provide a hosts and the paths that should be available
+      # - host: localhost
+        # paths:
+        # - /
+    # -- configure the ingress' tls
+    tls: []
+      # - secretName: rainbow-tls
+        # hosts:
+          # - rainbow.fiware.org
   # -- configuration of service access to rainbow
   service:
     # -- service type to be used
@@ -790,6 +866,9 @@ contract-management:
     rainbow:
       ## URL for the Rainbow service
       url: http://rainbow:8080
+    odrl:
+      ## URL to the ODRL-PAP
+      url: http://odrl-pap:8080
 
 # -- configuration for the did-helper, should only be used for demonstrational deployments, see https://github.com/wistefan/did-helper
 did:
@@ -827,6 +906,14 @@ didJson:
 # -- configuration of mongo db to be used for the marketplace
 mongodb:
   enabled: false
+  # -- configuration of the used image
+  global:
+    security:
+      # allow the image from the legacy repo
+      allowInsecureImages: true
+  image:
+    # -- repository where the image is held, see https://github.com/bitnami/charts/issues/35164 for further info
+    repository: bitnamilegacy/mongodb
   fullnameOverride: mongodb
   auth:
     enabled: true
@@ -872,7 +959,7 @@ marketplace:
     maxUploadSize: "5242880"
 
     serviceAccount:
-      create: true
+      create: false
 
     # -- configuration of the charging backend to be deployed
     deployment:
