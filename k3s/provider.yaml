@@ -234,10 +234,6 @@ vcverifier:
         paths:
           - "/"
   deployment:
-    image:
-      repository: quay.io/wi_stefan/vcverifier
-      tag: 10.0.1
-      pullPolicy: Always
     logging:
       level: DEBUG
     verifier:
@@ -354,22 +350,10 @@ mysql:
       enabled: false
 
 postgis:
-  primary:
-    resourcesPreset: none
-    persistence:
-      enabled: false
-  readReplicas:
-    persistence:
-      enabled: false
+  enabled: false
 
 postgresql:
-  primary:
-    resourcesPreset: none
-    persistence:
-      enabled: false
-  readReplicas:
-    persistence:
-      enabled: false
+  enabled: false
 
 did:
   enabled: true
@@ -400,6 +384,13 @@ dataSpaceConfig:
     - oid4vp
 
 scorpio:
+  db:
+    dbhost: postgres
+    user: scorpio
+    existingSecret:
+      enabled: true
+      name: scorpio.postgres.credentials.postgresql.acid.zalan.do
+      key: password
   ingress:
     enabled: true
     # only to make it available for the test initialization
@@ -408,7 +399,17 @@ scorpio:
       paths:
         - "/"
 
-odrl-pap:
+odrl-pap:  
+  database:
+    # -- url to connect the db at
+    url: jdbc:postgresql://postgres:5432/pap
+    # -- username to access the db
+    username: pap
+    # -- secret to take the password from
+    existingSecret:
+      enabled: true
+      name: pap.postgres.credentials.postgresql.acid.zalan.do
+      key: password
   deployment:
     initContainers:
       - name: get-did
@@ -458,17 +459,29 @@ tm-forum-api:
         paths:
           - /
 
+postgres-operator:
+  enabled: false
+
+managedPostgres:
+  enabled: true
+  config:
+    volume:
+      storageClass: local-path
+
 # -- integration of rainbow
 rainbow:
   enabled: true
   db:
-    url: postgresql
-    user: postgres
-    existingSecret: database-secret
-    passwordKey: postgres-admin-password
+    url: postgres
+    user: rainbow
+    existingSecret: rainbow.postgres.credentials.postgresql.acid.zalan.do
+    passwordKey: password
   ingress:
     enabled: true
-    host: rainbow-provider.127.0.0.1.nip.io
+    hosts:
+      - host: rainbow-provider.127.0.0.1.nip.io
+        paths:
+          - /
 
 tpp:
   enabled: true
@@ -506,9 +519,9 @@ contract-management:
     rainbow:
       ## URL for the Rainbow service
       url: http://rainbow:8080
-    quote:
-      ## URL for TM Forum Service hosting the Quote API
-      url: http://provider-tm-forum-api-quote:8080
+    odrl:
+      ## URL for the ODRL-PAP
+      url: http://odrl-pap:8080
 
 trusted-issuers-list:
   # only open for clean up in the tests
@@ -653,6 +666,12 @@ marketplace:
         value: "http://squid-proxy.infra.svc.cluster.local:8888"
 
 keycloak:
+  externalDatabase:
+    host: postgres
+    database: keycloak
+    user: keycloak
+    existingSecret: keycloak.postgres.credentials.postgresql.acid.zalan.do
+    existingSecretPasswordKey: password
   ingress:
     enabled: true
     hostname: keycloak-provider.127.0.0.1.nip.io
@@ -724,7 +743,7 @@ keycloak:
           mountPath: /did-material
 
     - name: prepare-envs
-      image: docker.io/bitnami/keycloak:26.2.1-debian-12-r0
+      image: docker.io/bitnamilegacy/keycloak:26.2.1-debian-12-r0
       command:
         - /bin/sh
       args:
