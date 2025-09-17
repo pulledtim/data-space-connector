@@ -10,12 +10,13 @@ managedMysql:
   enabled: false
   # -- allows to set a fixed name for the services
   fullnameOverride: managed-mysql
-  rootPasswordSecretKeyRef:
-    name: mysql-database-secret
-    key: mysql-root-password
-  storage:
-    size: 10Gi
-  replicas: 1
+  mariadb:
+    rootPasswordSecretKeyRef:
+      name: mysql-database-secret
+      key: mysql-root-password
+    storage:
+      size: 10Gi
+    replicas: 1
   databases:
      - name: tirdb
        characterSet: utf8
@@ -35,7 +36,7 @@ managedMysql:
      - name: tirdb
        privileges:
          - "ALL PRIVILEGES"
-       database: "*"
+       database: "tirdb"
        table: "*"
        username: tir
        grantOption: true
