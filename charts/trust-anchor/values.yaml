@@ -16,13 +16,13 @@ managedMysql:
   storage:
     size: 10Gi
   replicas: 1
-  databases: []
+  databases:
      - name: tirdb
        characterSet: utf8
        collate: utf8_general_ci
        cleanupPolicy: Delete
        requeueInterval: 10h
-  users: []
+  users:
      - name: tir
        passwordSecretKeyRef:
          name: mysql-database-secret
@@ -31,7 +31,7 @@ managedMysql:
        cleanupPolicy: Delete
        requeueInterval: 10h
        retryInterval: 30s
-  grants: []
+  grants:
      - name: tirdb
        privileges:
          - "ALL PRIVILEGES"
