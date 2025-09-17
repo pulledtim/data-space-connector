@@ -382,6 +382,27 @@ entries:
     version: 24.2.0
   trust-anchor:
   - apiVersion: v2
+    created: "2025-09-17T14:36:39.323480822Z"
+    dependencies:
+    - condition: trusted-issuers-list.enabled
+      name: trusted-issuers-list
+      repository: https://fiware.github.io/helm-charts
+      version: 0.6.2
+    - condition: mysql.enabled
+      name: mysql
+      repository: https://charts.bitnami.com/bitnami
+      version: 14.0.3
+    - condition: managedMysql.enabled
+      name: mariadb-cluster
+      repository: https://helm.mariadb.com/mariadb-operator
+      version: 25.8.3
+    description: Umbrella Chart to provide a minimal trust anchor for a FIWARE Dataspace
+    digest: 84cb3028bf50b82fb37d0a355f980812c651ba9edd48157c34cb574d1c1ee949
+    name: trust-anchor
+    urls:
+    - https://github.com/pulledtim/data-space-connector/releases/download/trust-anchor-0.4.0/trust-anchor-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
     created: "2025-09-11T13:07:43.975303908Z"
     dependencies:
     - condition: trusted-issuers-list.enabled
@@ -398,4 +419,4 @@ entries:
     urls:
     - https://github.com/pulledtim/data-space-connector/releases/download/trust-anchor-0.3.0/trust-anchor-0.3.0.tgz
     version: 0.3.0
-generated: "2025-09-11T13:07:43.975323594Z"
+generated: "2025-09-17T14:36:39.323498214Z"
