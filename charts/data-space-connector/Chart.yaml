@@ -2,7 +2,7 @@ apiVersion: v2
 name: data-space-connector
 description: Umbrella Chart for the FIWARE Data Space Connector, combining all essential parts to be used by a participant.
 type: application
-version: 25.0.0
+version: 25.1.0
 dependencies:
   - name: postgresql
     condition: postgresql.enabled
@@ -79,3 +79,8 @@ dependencies:
     condition: postgres-operator.enabled
     version: 1.14.0
     repository: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
+  - name: mariadb-cluster
+    alias: managedMysql
+    condition: managedMysql.enabled
+    version: 25.8.3
+    repository: https://helm.mariadb.com/mariadb-operator
