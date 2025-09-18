@@ -462,7 +462,7 @@ managedMysql:
   fullnameOverride: managed-mysql
   mariadb:
     rootPasswordSecretKeyRef:
-      name: mysql-database-secret
+      name: authentication-database-secret
       key: mysql-root-password
     storage:
       size: 10Gi
@@ -483,7 +483,7 @@ managedMysql:
   users:
      - name: ccs
        passwordSecretKeyRef:
-         name: mysql-database-secret
+         name: authentication-database-secret
          key: mysql-password
        host: "%"
        cleanupPolicy: Delete
@@ -492,7 +492,7 @@ managedMysql:
        maxUserConnections: 30
      - name: til
        passwordSecretKeyRef:
-         name: mysql-database-secret
+         name: authentication-database-secret
          key: mysql-password
        host: "%"
        cleanupPolicy: Delete
