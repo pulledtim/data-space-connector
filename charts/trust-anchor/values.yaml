@@ -17,6 +17,8 @@ managedMysql:
     storage:
       size: 10Gi
     replicas: 1
+    galera:
+      enabled: false
   databases:
      - name: tirdb
        characterSet: utf8
@@ -32,6 +34,7 @@ managedMysql:
        cleanupPolicy: Delete
        requeueInterval: 10h
        retryInterval: 30s
+       maxUserConnections: 30
   grants:
      - name: tirdb
        privileges:
