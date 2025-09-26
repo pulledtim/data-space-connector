@@ -19,6 +19,9 @@ data:
           "publicKeyJwk": {
             {{- if .Values.didJson.key.kty }}
             "kty": {{ .Values.didJson.key.kty | quote }},
+            "crv": {{ .Values.didJson.key.crv | quote }},
+            "x": {{ .Values.didJson.key.x | quote }},
+            "y": {{ .Values.didJson.key.y | quote }},
             {{- else }}
             "kty: "RSA",
             "e": {{ .Values.didJson.key.exponent | quote }},
