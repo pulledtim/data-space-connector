@@ -1,7 +1,7 @@
 apiVersion: v2
 name: trust-anchor
 description: Umbrella Chart to provide a minimal trust anchor for a FIWARE Dataspace
-version: 0.3.0
+version: 0.5.1
 dependencies:
   - name: trusted-issuers-list
     condition: trusted-issuers-list.enabled
@@ -11,3 +11,8 @@ dependencies:
     condition: mysql.enabled
     version: 14.0.3
     repository: https://charts.bitnami.com/bitnami
+  - name: mariadb-cluster
+    alias: managedMysql
+    condition: managedMysql.enabled
+    version: 25.8.3
+    repository: https://helm.mariadb.com/mariadb-operator

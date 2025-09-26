@@ -455,6 +455,75 @@ managedPostgres:
     postgresql:
       version: "17"
 
+managedMysql:
+  # -- should it be enabled? set to false if one outside the chart is used.
+  enabled: false
+  # -- allows to set a fixed name for the services
+  fullnameOverride: managed-mysql
+  mariadb:
+    rootPasswordSecretKeyRef:
+      name: authentication-database-secret
+      key: mysql-root-password
+    storage:
+      size: 10Gi
+    replicas: 1
+    galera:
+      enabled: false
+  databases:
+     - name: ccsdb
+       characterSet: utf8
+       collate: utf8_general_ci
+       cleanupPolicy: Delete
+       requeueInterval: 10h
+     - name: tildb
+       characterSet: utf8
+       collate: utf8_general_ci
+       cleanupPolicy: Delete
+       requeueInterval: 10h
+  users:
+     - name: ccs
+       passwordSecretKeyRef:
+         name: authentication-database-secret
+         key: mysql-password
+       host: "%"
+       cleanupPolicy: Delete
+       requeueInterval: 10h
+       retryInterval: 30s
+       maxUserConnections: 30
+     - name: til
+       passwordSecretKeyRef:
+         name: authentication-database-secret
+         key: mysql-password
+       host: "%"
+       cleanupPolicy: Delete
+       requeueInterval: 10h
+       retryInterval: 30s
+       maxUserConnections: 30
+  grants:
+     - name: ccsdb
+       privileges:
+         - "ALL PRIVILEGES"
+       database: "ccsdb"
+       table: "*"
+       username: ccs
+       grantOption: true
+       host: "%"
+       cleanupPolicy: Delete
+       requeueInterval: 10h
+       retryInterval: 30s
+     - name: tildb
+       privileges:
+         - "ALL PRIVILEGES"
+       database: "tildb"
+       table: "*"
+       username: til
+       grantOption: true
+       host: "%"
+       cleanupPolicy: Delete
+       requeueInterval: 10h
+       retryInterval: 30s
+
+
 ## configuration of the keycloak - see https://github.com/bitnami/charts/tree/main/bitnami/keycloak for details
 keycloak:
   # -- should it be enabled? set to false if one outside the chart is used.

@@ -5,6 +5,49 @@ generatePasswords:
   #-- name of the secret to put the generated password into
   secretName: mysql-database-secret
 
+managedMysql:
+  # -- should it be enabled? set to false if one outside the chart is used.
+  enabled: false
+  # -- allows to set a fixed name for the services
+  fullnameOverride: managed-mysql
+  mariadb:
+    rootPasswordSecretKeyRef:
+      name: mysql-database-secret
+      key: mysql-root-password
+    storage:
+      size: 10Gi
+    replicas: 1
+    galera:
+      enabled: false
+  databases:
+     - name: tirdb
+       characterSet: utf8
+       collate: utf8_general_ci
+       cleanupPolicy: Delete
+       requeueInterval: 10h
+  users:
+     - name: tir
+       passwordSecretKeyRef:
+         name: mysql-database-secret
+         key: mysql-password
+       host: "%"
+       cleanupPolicy: Delete
+       requeueInterval: 10h
+       retryInterval: 30s
+       maxUserConnections: 30
+  grants:
+     - name: tirdb
+       privileges:
+         - "ALL PRIVILEGES"
+       database: "tirdb"
+       table: "*"
+       username: tir
+       grantOption: true
+       host: "%"
+       cleanupPolicy: Delete
+       requeueInterval: 10h
+       retryInterval: 30s
+
 # -- configuration for the mysql to be deployed as part of the trust-anchor, see https://github.com/bitnami/charts/tree/main/bitnami/mysql for all options
 mysql:
   # -- should it be enabled? set to false if one outside the chart is used.
