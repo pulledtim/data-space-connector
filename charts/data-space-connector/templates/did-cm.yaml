@@ -21,9 +21,9 @@ data:
             "kty": {{ .Values.didJson.key.kty | quote }},
             {{- else }}
             "kty: "RSA",
-            {{- end }}
             "e": {{ .Values.didJson.key.exponent | quote }},
             "n": {{ .Values.didJson.key.modulus | quote }},
+            {{- end }}
             {{- if .Values.didJson.key.x5u }}
             "x5u": {{ .Values.didJson.key.x5u | quote }}
             {{- else }}
